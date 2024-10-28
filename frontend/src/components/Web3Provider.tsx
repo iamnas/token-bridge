@@ -94,14 +94,14 @@
 
 
 import { WagmiProvider, createConfig } from "wagmi";
-import { sepolia,bscTestnet } from "wagmi/chains";
+import { bscTestnet,avalancheFuji } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 // import { Header } from "./components/Headers";
 
 const config = createConfig(
     getDefaultConfig({
-      chains: [sepolia,bscTestnet],
+      chains: [avalancheFuji,bscTestnet],
       walletConnectProjectId:'aef07496ac7554dee112fc0189e60ac0',
       appName: "BridgeUSDT",
       appDescription: "BridgeUSDT",
