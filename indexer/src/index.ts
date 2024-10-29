@@ -2,9 +2,12 @@ import { Contract, JsonRpcProvider, Wallet, Interface } from "ethers";
 import Bull from "bull";
 import dotenv from "dotenv";
 import { ABI } from "./contract";
+import { PrismaClient } from "@prisma/client";
 
 dotenv.config();
 
+
+const prisma = new PrismaClient()
 
 const providerBNB = new JsonRpcProvider(process.env.BNB_RPC);
 const providerAVA = new JsonRpcProvider(process.env.AVA_RPC);
@@ -26,6 +29,7 @@ const redisConfig = {
   redis: {
     host: process.env.REDIS_HOST || "127.0.0.1",
     port: parseInt(process.env.REDIS_PORT || "6379", 10),
+    password:process.env.REDIS_PASSWORD || ''
   },
 };
 const bridgeQueue = new Bull("bridgeQueue", redisConfig);
@@ -44,24 +48,25 @@ const listenToBridgeEventsBNB = async (
     // console.log(filter);
 
   try {
-    const logs = await provider.getLogs({ ...filter, fromBlock: "latest" });
-
-    // console.log(logs);
-    
+    const logs = await provider.getLogs({ ...filter, fromBlock: "latest" });    
 
     logs.forEach((log) => {
+      
+      // const txhash = log.transactionHash
+      // console.log(txhash);
+
       const parsedLog = bridgeInterface.parseLog(log);
 
       if (parsedLog) {
-        // console.log(parsedLog.args);
-
+        const txhash = log.transactionHash
         const tokenAddress = parsedLog.args[0].toString();
         const amount = parsedLog.args[1].toString();
         const sender = parsedLog.args[2].toString();
 
-        console.log(`Bridge event detected: ${amount} tokens from ${sender}`);
+        console.log(`Bridge event detected: ${amount} tokens from ${sender} ,${txhash}`);
 
         bridgeQueue.add({
+          txhash:txhash.toLowerCase(),
           tokenAddress: tokenAddress.toString(),
           amount: amount.toString(),
           sender: sender.toString(),
@@ -94,8 +99,8 @@ const listenToBridgeEventsAVA = async (
       const parsedLog = bridgeInterface.parseLog(log);
 
       if (parsedLog) {
-        console.log(parsedLog.args);
-
+        // console.log(parsedLog.args);
+        const txhash = log.transactionHash
         const tokenAddress = parsedLog.args[0].toString();
         const amount = parsedLog.args[1].toString();
         const sender = parsedLog.args[2].toString();
@@ -103,6 +108,7 @@ const listenToBridgeEventsAVA = async (
         console.log(`Bridge event detected: ${amount} tokens from ${sender}`);
 
         bridgeQueue.add({
+          txhash:txhash.toLowerCase(),
           tokenAddress: tokenAddress.toString(),
           amount: amount.toString(),
           sender: sender.toString(),
@@ -119,22 +125,53 @@ const listenToBridgeEventsAVA = async (
 // Set up polling listeners
 setInterval(
   () => listenToBridgeEventsBNB(providerBNB, contractBNB, false),
-  2500
+  1000
 ); // 10 sec polling
 setInterval(
   () => listenToBridgeEventsAVA(providerAVA, contractAVA, true),
-  9000
+  1000
 ); // 10 sec polling
 
 // Process jobs in bridgeQueue
 bridgeQueue.process(async (job) => {
-  const { tokenAddress, amount, sender, isBNB } = job.data;
+  const { txhash,tokenAddress, amount, sender, isBNB } = job.data;
+
+
+
   console.log(
     `Processing bridge event for ${amount} tokens from ${sender} ${tokenAddress} ${isBNB}`
   );
 
   try {
+
+    let transaction = await prisma.transactionData.findUnique({
+      where: { txHash: txhash },
+    });
+
+    // If transaction does not exist, create it
+    if (!transaction) {
+      transaction = await prisma.transactionData.create({
+        data: {
+          txHash: txhash,
+          tokenAddress,
+          amount,
+          sender,
+          network: isBNB ? 'BNB' : 'Avalanche',
+          isDone: false,
+        },
+      });
+    }
+
+    if (transaction.isDone) {
+      console.log(`Transaction ${txhash} is already processed. Skipping.`);
+      return { success: true, message: 'Transaction already processed' };
+    }
+
     await transferToken(isBNB, tokenAddress, amount, sender);
+    await prisma.transactionData.update({
+      where: { txHash: txhash },
+      data: { isDone: true },
+    });
     return { success: true };
   } catch (error) {
     console.error(`Error processing job ${job.id}:`, error);
@@ -167,6 +204,7 @@ const transferToken = async (
     const tx = await contractInstance.redeem(testToken, sender, amount);
     await tx.wait();
     console.log(`Successfully transferred ${amount} tokens to ${sender}`);
+
   } catch (error) {
     console.log("Transfer token error:", error);
     throw error;

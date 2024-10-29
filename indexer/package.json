@@ -5,13 +5,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx --watch src/index.ts",
-    "build":"tsc"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@prisma/client": "^5.21.1",
     "bull": "^4.16.3",
     "bullmq": "^5.21.2",
     "chainsauce": "github:boudra/chainsauce#main",
@@ -21,6 +22,7 @@
     "tsx": "^4.19.2"
   },
   "devDependencies": {
-    "@types/bull": "^3.15.9"
+    "@types/bull": "^3.15.9",
+    "prisma": "^5.21.1"
   }
 }
