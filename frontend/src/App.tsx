@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ConnectKitButton } from 'connectkit';
 import { useAccount, useReadContract, useWriteContract } from 'wagmi';
 import './App.css';
@@ -7,7 +7,6 @@ import { BNB_BRIDGE, BNB_TOKEN, BRIDGE_ABI, AVA_BRIDGE, AVA_TOKEN, TOKEN_ALLOWAN
 function App() {
   const [fromNetwork, setFromNetwork] = useState('Avalanche');
   const [toNetwork, setToNetwork] = useState('BNB');
-  // const toNetwork = fromNetwork === 'Avalanche' ? 'BNB' : 'Avalanche';
   const [amount, setAmount] = useState(0);
   const [isAllowanceSufficient, setIsAllowanceSufficient] = useState(false);
   const [walletConnected, setWalletConnected] = useState(false);
@@ -93,9 +92,7 @@ function App() {
     }
   };
 
-  const handleFromNetworkChange = (e: { target: { value: SetStateAction<string>; }; }) => {
-    setFromNetwork(e.target.value);
-  };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-white to-blue-50">
@@ -110,18 +107,6 @@ function App() {
           </div>
 
           <div className="space-y-5">
-            {/* <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">From Network</label>
-              <select
-                className="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 focus:ring-2 focus:ring-blue-100 focus:border-blue-300 transition-all"
-                value={fromNetwork}
-                onChange={handleFromNetworkChange}
-              >
-                <option value="Avalanche">Avalanche</option>
-                <option value="BNB">BNB</option>
-              </select>
-            </div> */}
-
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">To Network</label>
               <input
