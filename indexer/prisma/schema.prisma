@@ -13,15 +13,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
+enum NETWOEK {
+  BNB
+  Avalanche
+} 
 model TransactionData {
-  id           String  @id @default(auto()) @map("_id") @db.ObjectId
-  txHash       String @unique
-  isDone       Boolean @default(false)
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  txHash       String   @unique
+  isDone       Boolean  @default(false)
   tokenAddress String
   amount       String
   sender       String
   network      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
+
+model NetworkStatus {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  network            NETWOEK  @unique
+  lastProcessedBlock Int
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
