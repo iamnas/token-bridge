@@ -19,7 +19,7 @@ function App() {
 
   useEffect(() => {
 
-    
+
     if (chainId === 56) {
       setFromNetwork('BNB')
       setToNetwork('Avalanche')
@@ -52,12 +52,12 @@ function App() {
 
   useEffect(() => {
 
-    if(Number(amount)===0){
+    if (Number(amount) === 0) {
       setIsAllowanceSufficient(false);
-      return ;
+      return;
     }
-    
-    setIsAllowanceSufficient(Number(allowance)/1e9 >= Number(amount));
+
+    setIsAllowanceSufficient(Number(allowance) / 1e9 >= Number(amount));
   }, [allowance, amount]);
 
   const approve = async () => {
@@ -122,7 +122,7 @@ function App() {
               </select>
             </div> */}
 
-<div className="space-y-2">
+            <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">To Network</label>
               <input
                 type="text"

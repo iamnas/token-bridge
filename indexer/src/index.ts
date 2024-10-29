@@ -85,7 +85,6 @@ const listenToBridgeEvents = async (
       where: { network },
       data: { lastProcessedBlock: latestBlock },
     });
-    
   } catch (error) {
     console.error(`Error retrieving or parsing logs on ${network}:`, error);
   }
@@ -159,7 +158,6 @@ const transferToken = async (
 
     const tx = await contractInstance.redeem(testToken, sender, amount);
     await tx.wait();
-
   } catch (error) {
     throw error;
   }

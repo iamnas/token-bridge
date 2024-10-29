@@ -12,8 +12,6 @@ export const AVA_BRIDGE = "0xd2b67e826936ABDc5Fd7caFa32F8d0ce1C94ed62";
 // export const SEPOLIA_TOKEN = "0x50263406D3eCf4d5e0c4D7a52Dca2f926699BFF7";
 export const AVA_TOKEN = "0xf93c0f3aA7dbBEAeB106914414F366264D47bAe0";
 
-
-
 export const TOKEN_ALLOWANCE_ABI = [
   {
     inputs: [
