@@ -86,7 +86,7 @@ const listenToBridgeEvents = async (
       data: { lastProcessedBlock: latestBlock },
     });
   } catch (error) {
-    console.error(`Error retrieving or parsing logs on ${network}:`, error);
+    throw error;
   }
 };
 
@@ -130,7 +130,6 @@ bridgeQueue.process(async (job) => {
 
     return { success: true };
   } catch (error) {
-    console.error(`Error processing job ${job.id}:`, error);
     throw error;
   }
 });
