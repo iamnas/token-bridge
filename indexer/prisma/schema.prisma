@@ -16,7 +16,8 @@ datasource db {
 enum NETWOEK {
   BNB
   Avalanche
-} 
+}
+
 model TransactionData {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   txHash       String   @unique
@@ -25,6 +26,7 @@ model TransactionData {
   amount       String
   sender       String
   network      String
+  nonce        Int
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -37,3 +39,8 @@ model NetworkStatus {
   updatedAt          DateTime @updatedAt
 }
 
+model Nonce {
+  id      String  @id @default(auto()) @map("_id") @db.ObjectId
+  nonce   Int      @default(0)
+  network NETWOEK @unique
+}

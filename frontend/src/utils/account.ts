@@ -1,13 +1,15 @@
 // export const bnb
 // export const bridge
-export const BNB_BRIDGE = "0x539092e5fb1506Ff8B935C3F9e2E8b99Abd0f682";
+export const BNB_BRIDGE = "0x33f5959a69A535E1c109f749d84414Ad1b2Bf808"
+// "0x539092e5fb1506Ff8B935C3F9e2E8b99Abd0f682";
 // export const token
 export const BNB_TOKEN = "0x5bf65Df18EF641F8bF0Bed5138Ee0dE95B4e6701";
 
 // export const sepolia
 // export const bridge
 // export const SEPOLIA_BRIDGE = "0xd9442221dDfC61Bd779a89C4138f786d1e90ADf2";
-export const AVA_BRIDGE = "0xd2b67e826936ABDc5Fd7caFa32F8d0ce1C94ed62";
+export const AVA_BRIDGE = "0x00a3C8870DAd85979dd64328Fbe47Dd20b953823"
+// "0xd2b67e826936ABDc5Fd7caFa32F8d0ce1C94ed62";
 // export const token
 // export const SEPOLIA_TOKEN = "0x50263406D3eCf4d5e0c4D7a52Dca2f926699BFF7";
 export const AVA_TOKEN = "0xf93c0f3aA7dbBEAeB106914414F366264D47bAe0";

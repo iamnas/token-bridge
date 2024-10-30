@@ -14,6 +14,8 @@ contract BridgeContract is Ownable {
 
     constructor() Ownable(_msgSender()) {}
 
+    uint256 public nonce;
+
     function bridge(IERC20 _tokenAddress, uint256 _amount) public {
         require(
             _tokenAddress.allowance(_msgSender(), address(this)) >= _amount,
@@ -29,12 +31,15 @@ contract BridgeContract is Ownable {
     function redeem(
         IERC20 _tokenAddress,
         address _to,
-        uint256 _amount
+        uint256 _amount,
+        uint256 _nonce
     ) external onlyOwner {
+        require(_nonce == nonce + 1, "Invalid nonce");
         require(
             _tokenAddress.transfer(_to, _amount),
             BridgeContract__Transaction_Failed()
         );
+        nonce = nonce + 1;
         emit Redeem(_tokenAddress, _to, _amount);
     }
 }

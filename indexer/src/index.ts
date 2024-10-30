@@ -106,6 +106,12 @@ bridgeQueue.process(async (job) => {
     });
 
     if (!transaction) {
+      const nonceRecord = await prisma.nonce.upsert({
+        where: { network },
+        update: { nonce: { increment: 1 } },
+        create: { network, nonce: 1 },
+      });
+
       transaction = await prisma.transactionData.create({
         data: {
           txHash: txhash,
@@ -114,6 +120,7 @@ bridgeQueue.process(async (job) => {
           sender,
           network,
           isDone: false,
+          nonce: nonceRecord.nonce,
         },
       });
     }
@@ -122,7 +129,7 @@ bridgeQueue.process(async (job) => {
       return { success: true, message: "Transaction already processed" };
     }
 
-    await transferToken(network === "BNB", tokenAddress, amount, sender);
+    await transferToken(network === "BNB", amount, sender, transaction.nonce);
     await prisma.transactionData.update({
       where: { txHash: txhash },
       data: { isDone: true },
@@ -136,9 +143,9 @@ bridgeQueue.process(async (job) => {
 
 const transferToken = async (
   isBNB: boolean,
-  tokenAddress: string,
   amount: string,
-  sender: string
+  sender: string,
+  nonce: number
 ) => {
   try {
     const RPC = !isBNB ? process.env.BNB_RPC : process.env.AVA_RPC;
@@ -155,7 +162,7 @@ const transferToken = async (
       ? process.env.TESTTOKEN_BNB!
       : process.env.TESTTOKEN_AVA!;
 
-    const tx = await contractInstance.redeem(testToken, sender, amount);
+    const tx = await contractInstance.redeem(testToken, sender, amount, nonce);
     await tx.wait();
   } catch (error) {
     throw error;
