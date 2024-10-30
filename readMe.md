@@ -16,7 +16,9 @@ A cross-chain token bridge allowing users to deposit and retrieve tokens across 
 
 ## Demo Video
 
-[Watch the Demo Video](https://res.cloudinary.com/debysbb33/video/upload/v1730282338/upxzgh6p3yle8ui7ihyc.mp4) to see the Token Bridge in action.
+[![Watch the Demo Video](./public/demo-thumbnail.png)](https://res.cloudinary.com/debysbb33/video/upload/v1730282338/upxzgh6p3yle8ui7ihyc.mp4)
+
+Click the image above to see the Token Bridge in action.
 
 ## Getting Started
 
