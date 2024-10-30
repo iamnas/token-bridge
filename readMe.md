@@ -55,7 +55,7 @@ Click the image above to see the Token Bridge in action.
 2. **Run Indexer**: Start the indexer to monitor events and handle transfers.
    ```bash
    cd indexer
-   npm start
+   npm run dev
    ```
 
 3. **Start Frontend**: Launch the frontend to interact with the bridge.
