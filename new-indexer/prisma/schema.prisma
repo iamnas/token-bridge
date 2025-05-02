@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum NETWOEK {
+  BNB
+  Avalanche
+}
+
+model TransactionData {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  txHash       String   @unique
+  isDone       Boolean  @default(false)
+  tokenAddress String
+  amount       String
+  sender       String
+  network      String
+  nonce        Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model NetworkStatus {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  network            NETWOEK  @unique
+  lastProcessedBlock Int
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Nonce {
+  id      String  @id @default(auto()) @map("_id") @db.ObjectId
+  nonce   Int      @default(0)
+  network NETWOEK @unique
+}
